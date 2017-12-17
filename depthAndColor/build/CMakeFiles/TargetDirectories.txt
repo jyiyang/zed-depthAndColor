@@ -1,0 +1,3 @@
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles/edit_cache.dir
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles/rebuild_cache.dir
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles/depthAndColor.dir
