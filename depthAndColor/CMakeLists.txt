@@ -22,9 +22,9 @@ link_directories(${ZED_LIBRARY_DIR})
 link_directories(${CUDA_LIBRARY_DIRS})
 link_directories(${OpenCV_LIBRARY_DIRS})
 
-ADD_EXECUTABLE(${execName} "main.cpp")
-add_definitions(-std=c++11 -g -O3 -Wall)
+ADD_EXECUTABLE(${execName} main.cpp Logger.cpp)
+add_definitions(-std=c++11 -g -O3)
 
 TARGET_LINK_LIBRARIES(${execName}
                         ${ZED_LIBRARIES}
-                        ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} ${OpenCV_LIBS})
+                        ${CUDA_CUDA_LIBRARY} ${CUDA_CUDART_LIBRARY} ${CUDA_NPP_LIBRARIES_ZED} ${OpenCV_LIBS} -lz)

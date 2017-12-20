@@ -124,6 +124,21 @@ depthAndColor/fast:
 .PHONY : depthAndColor/fast
 
 # target to build an object file
+Logger.o:
+	$(MAKE) -f CMakeFiles/depthAndColor.dir/build.make CMakeFiles/depthAndColor.dir/Logger.o
+.PHONY : Logger.o
+
+# target to preprocess a source file
+Logger.i:
+	$(MAKE) -f CMakeFiles/depthAndColor.dir/build.make CMakeFiles/depthAndColor.dir/Logger.i
+.PHONY : Logger.i
+
+# target to generate assembly for a file
+Logger.s:
+	$(MAKE) -f CMakeFiles/depthAndColor.dir/build.make CMakeFiles/depthAndColor.dir/Logger.s
+.PHONY : Logger.s
+
+# target to build an object file
 main.o:
 	$(MAKE) -f CMakeFiles/depthAndColor.dir/build.make CMakeFiles/depthAndColor.dir/main.o
 .PHONY : main.o
@@ -147,6 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... depthAndColor"
+	@echo "... Logger.o"
+	@echo "... Logger.i"
+	@echo "... Logger.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

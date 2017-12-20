@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+../include/Logger.h
+opencv2/opencv.hpp
+../include/opencv2/opencv.hpp
+
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/Logger.cpp
+zlib.h
+-
+opencv2/opencv.hpp
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/opencv2/opencv.hpp
+Logger.h
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/Logger.h
+
 /home/akshay/Documents/zed-getColorAndDepth/depthAndColor/main.cpp
 opencv2/opencv.hpp
 -
@@ -23,8 +35,18 @@ limits
 -
 signal.h
 -
+getopt.h
+-
+stdlib.h
+-
+unistd.h
+-
+ctime
+-
 sl/Camera.hpp
 -
+Logger.h
+/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/Logger.h
 
 /opt/ros/kinetic/include/opencv-3.2.0-dev/opencv/cxcore.h
 opencv2/core/core_c.h

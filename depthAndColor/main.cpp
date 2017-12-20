@@ -1,22 +1,3 @@
-///////////////////////////////////////////////////////////////////////////
-//
-// Copyright (c) 2017, STEREOLABS.
-//
-// All rights reserved.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-///////////////////////////////////////////////////////////////////////////
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -25,16 +6,17 @@
 #include <thread>
 #include <limits>
 #include <signal.h>
+#include <getopt.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <ctime>
 
 #include <sl/Camera.hpp>
 
+#include "Logger.h"
+
 using namespace sl;
 
-
-// void saveDepthImage() {
-// 	float max_value = std::numeric_limits<unsigned short int>::max();
-// 	float scale_factor = max_value / zed_
-// }
 cv::Mat slMat2cvMat(Mat& input) {
     // Mapping between MAT_TYPE and CV_TYPE
     int cv_type = -1;
@@ -55,14 +37,59 @@ cv::Mat slMat2cvMat(Mat& input) {
     return cv::Mat(input.getHeight(), input.getWidth(), cv_type, input.getPtr<sl::uchar1>(MEM_CPU));
 }
 
-int main(int argc, char **argv) {
+void printHelp() {
+	fprintf(stderr, "./depthAndColor -d [recording duration in seconds] -f [output filename end with .klg]\n");
+}
 
+int main(int argc, char *argv[]) {
+
+	int option = 0;
+	int duration = 0;
+	char *filename;
+
+	while ((option = getopt(argc, argv, "hf:d:")) != -1) {
+		switch (option)
+		{
+			case 'f':
+				filename = optarg;
+				break;
+			case 'd':
+				duration = atoi(optarg);
+				break;
+			case 'h':
+				printHelp();
+				exit(1);
+			case '?':
+				if (optopt == 'f') {
+					fprintf(stderr, "Option -%c requires an argument in string.\n", optopt);
+					printHelp();
+				}
+				else if (optopt == 'd') {
+					fprintf(stderr, "Option -%c requires an argument in integer.\n", optopt);
+					printHelp();
+				}
+				else if (isprint(optopt)) {
+					fprintf(stderr, "Unknown option -%c.\n", optopt);
+					printHelp();
+				}
+				else {
+					fprintf(stderr, "Unknown option character \\x%x.\n", optopt);
+					printHelp();
+				}
+				exit(1);
+			default:
+				printHelp();
+				exit(1);
+		}
+	}
+
+	printf("Duration: %d, Filename: %s\n", duration, filename);
     // Create a ZED camera object
     Camera zed;
 
     // Set configuration parameters
     InitParameters init_params;
-    init_params.depth_mode = DEPTH_MODE_PERFORMANCE; // Use PERFORMANCE depth mode
+    init_params.depth_mode = DEPTH_MODE_QUALITY; // Use QUALITY depth mode
     init_params.coordinate_units = UNIT_MILLIMETER; // Use millimeter units (for depth measurements)
 
     // Open the camera
@@ -74,53 +101,54 @@ int main(int argc, char **argv) {
     RuntimeParameters runtime_parameters;
     runtime_parameters.sensing_mode = SENSING_MODE_STANDARD; // Use STANDARD sensing mode
 
-    // Capture 50 images and depth, then stop
-    int i = 0;
-    sl::Mat image, point_cloud;
+    // Initialize klg logger
+    Logger logger(filename, true);
+
+    int numFrames = 0;
+    sl::Mat leftImage(zed.getResolution(), MAT_TYPE_8U_C4);
 
     sl::Mat depth(zed.getResolution(), MAT_TYPE_32F_C1);
     sl::Mat depth_disp(zed.getResolution(), MAT_TYPE_8U_C4);
 
     cv::Mat depth_cv = slMat2cvMat(depth);
     cv::Mat depth_cv_disp = slMat2cvMat(depth_disp);
+    cv::Mat depth_cv_ushort;
+    cv::Mat color_cv = slMat2cvMat(leftImage);
+    cv::Mat color_cv_3c;
 
-    cv::namedWindow("depth", 1);
-    std::string name = "depth";
-    std::string format = ".png";
-    while (i < 20) {
+    // Initialize timer
+    bool endFlag = false;
+    clock_t startTime = clock();
+
+    while (!endFlag) {
         // A new image is available if grab() returns SUCCESS
         if (zed.grab(runtime_parameters) == SUCCESS) {
             // Retrieve left image
-            zed.retrieveImage(image, VIEW_LEFT);
-            // Retrieve depth map. Depth is aligned on the left image
-            zed.retrieveImage(depth_disp, VIEW_DEPTH);
-
+            zed.retrieveImage(leftImage, VIEW_LEFT);
             zed.retrieveMeasure(depth, MEASURE_DEPTH);
-            // depth_cv = cv::Mat(depth.getHeight(), depth.getWidth(), CV_8UC4, depth.getPtr<sl::uchar1>(sl::MEM_CPU));
-            std::string filename = name + std::to_string(i) + format;
 
-            cv::imwrite(filename, depth_cv);
+            depth_cv.convertTo(depth_cv_ushort, CV_16UC1);
+            color_cv.convertTo(color_cv_3c, CV_8UC3);
 
-            cv::imshow("depth", depth_cv_disp);
-            char key = cv::waitKey(10);
-            // Retrieve colored point cloud. Point cloud is aligned on the left image.
-			// zed.retrieveMeasure(point_cloud, MEASURE_XYZRGBA);
-
-            // Get and print distance value in mm at the center of the image
-            // We measure the distance camera - object using Euclidean distance
-   //          int x = image.getWidth() / 2;
-   //          int y = image.getHeight() / 2;
-			// sl::float4 point_cloud_value;
-			// point_cloud.getValue(x, y, &point_cloud_value);
-
-   //          float distance = sqrt(point_cloud_value.x*point_cloud_value.x + point_cloud_value.y*point_cloud_value.y + point_cloud_value.z*point_cloud_value.z);
-   //          printf("Distance to Camera at (%d, %d): %f mm\n", x, y, distance);
+            // Write it to the logger
+            logger.writeFrame(depth_cv_ushort, color_cv_3c, numFrames+1);
 
       		// Increment the loop
-            i++;
+      		++numFrames;
+            printf("Currently in frame %d\n", numFrames);
+            
+
+            clock_t timePassed = clock();
+            if ( (int)((float)timePassed/CLOCKS_PER_SEC) > duration) {
+            	printf("Cleaning up with a total of %d frames...\n", numFrames);
+            	endFlag = true;
+            }
         }
     }
+
     // Close the camera
     zed.close();
+    // Close the logger
+    logger.close();
     return 0;
 }

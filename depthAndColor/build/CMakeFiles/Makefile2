@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/akshay/Documents/zed-getColorAndDepth/depthAndColor/bui
 CMakeFiles/depthAndColor.dir/all:
 	$(MAKE) -f CMakeFiles/depthAndColor.dir/build.make CMakeFiles/depthAndColor.dir/depend
 	$(MAKE) -f CMakeFiles/depthAndColor.dir/build.make CMakeFiles/depthAndColor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles --progress-num=1,2 "Built target depthAndColor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles --progress-num=1,2,3 "Built target depthAndColor"
 .PHONY : CMakeFiles/depthAndColor.dir/all
 
 # Include target in all.
@@ -76,7 +76,7 @@ all: CMakeFiles/depthAndColor.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/depthAndColor.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/depthAndColor.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles 0
 .PHONY : CMakeFiles/depthAndColor.dir/rule

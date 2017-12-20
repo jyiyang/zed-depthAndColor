@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/Logger.cpp" "/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles/depthAndColor.dir/Logger.o"
   "/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/main.cpp" "/home/akshay/Documents/zed-getColorAndDepth/depthAndColor/build/CMakeFiles/depthAndColor.dir/main.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

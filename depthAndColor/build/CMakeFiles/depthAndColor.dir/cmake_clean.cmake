@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/depthAndColor.dir/main.o"
+  "CMakeFiles/depthAndColor.dir/Logger.o"
   "depthAndColor.pdb"
   "depthAndColor"
 )
